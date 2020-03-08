@@ -6,12 +6,12 @@
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
-      (make-meta state key authors title)
-      metadata?
-      (state meta-state)
-      (key meta-key)
-      (authors meta-authors)
-      (title meta-title))
+    (make-meta state key authors title)
+    metadata?
+    (state meta-state)
+    (key meta-key)
+    (authors meta-authors)
+    (title meta-title))
 
   ;;;;
   ;; Utility functions
