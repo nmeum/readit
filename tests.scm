@@ -23,4 +23,17 @@
             ("Importance" . "High")
            )
           '())
-    (parse-file "chomsky1956hierarchy.txt")))
+    (parse-file "chomsky1956hierarchy.txt"))
+
+  (test "parse entry with fields and notes"
+    (list (make-meta #\-
+                     "landin1966languages"
+                     "Peter Landin"
+                     "The next 700 programming languages")
+          '(("DOI" . "10.1145/365230.365257"))
+          '(
+            "Describes a family of unimplemented languages"
+            "Focuses on expression-based languages"
+           ))
+    (parse-file "landin1966languages.txt")))
+
