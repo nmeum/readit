@@ -23,6 +23,15 @@
   (as-string (one-or-more
     (in (char-set-complement! (char-set #\newline))))))
 
+(define-syntax spaces-sequence*
+  (syntax-rules ()
+    ((_ () body ...)
+     (begin body ...))
+    ((_ ((binding parser) more-bindings ...) body ...)
+     (bind (preceded-by parse-spaces parser)
+           (lambda (binding)
+              (spaces-sequence* (more-bindings ...) body ...))))))
+
 ;;;;
 ;; Parsers for entry parts
 ;;;;
@@ -58,14 +67,11 @@
   parse-text)
 
 (define parse-field
-  (sequence* ((_     parse-spaces)
-              (_     (is #\*))
-              (_     parse-spaces)
-              (name  parse-field-name)
-              (_     (is #\:))
-              (_     parse-spaces)
-              (value parse-field-value)
-              (_     (is #\newline)))
+  (spaces-sequence* ((_     (is #\*))
+                     (name  parse-field-name)
+                     (_     (is #\:))
+                     (value parse-field-value)
+                     (_     (is #\newline)))
     (result (cons name value))))
 
 (define parse-fields
@@ -76,11 +82,9 @@
 ;;;;
 
 (define parse-note
-  (sequence* ((_    parse-spaces)
-              (_    (is #\*))
-              (_    parse-spaces)
-              (text parse-text)
-              (_    (is #\newline)))
+  (spaces-sequence* ((_    (is #\*))
+                     (text parse-text)
+                     (_    (is #\newline)))
     (result text)))
 
 (define parse-notes
@@ -98,14 +102,11 @@
     (result (list fields notes))))
 
 (define parse-entry
-  (sequence* ((state  parse-state)
-              (_      parse-spaces)
-              (key    parse-key)
-              (_      parse-spaces)
-              (author parse-author)
-              (_      (is #\:))
-              (_      parse-spaces)
-              (title  parse-title)
-              (_      (is #\newline))
-              (info   (maybe parse-info (list '() '()))))
+  (spaces-sequence* ((state  parse-state)
+                     (key    parse-key)
+                     (author parse-author)
+                     (_      (is #\:))
+                     (title  parse-title)
+                     (_      (is #\newline))
+                     (info   (maybe parse-info (list '() '()))))
     (result (cons (make-meta state key author title) info))))
