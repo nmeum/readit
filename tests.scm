@@ -25,6 +25,15 @@
           '())
     (parse-file "chomsky1956hierarchy.txt"))
 
+  (test "parse entry without fields and with a single note"
+    (list (make-meta #\-
+                     "mccarthy1960lisp"
+                     "John McCarthy"
+                     "Recursive functions of symbolic expressions and their computation by machine, part I")
+          '()
+          '("Introduces a programming system called LISP"))
+    (parse-file "mccarthy1960lisp.txt"))
+
   (test "parse entry with fields and notes"
     (list (make-meta #\-
                      "landin1966languages"
@@ -36,4 +45,3 @@
             "Focuses on expression-based languages"
            ))
     (parse-file "landin1966languages.txt")))
-
