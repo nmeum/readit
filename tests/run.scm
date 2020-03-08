@@ -1,4 +1,3 @@
-(load "parser.scm")
 (import (readit parser) comparse test)
 
 (define (parse-file path)
@@ -45,3 +44,5 @@
             "Focuses on expression-based languages"
            ))
     (parse-file "landin1966languages.txt")))
+
+(test-exit)
