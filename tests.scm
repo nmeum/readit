@@ -1,5 +1,5 @@
 (load "parser.scm")
-(import comparse test matchable srfi-1)
+(import comparse test)
 
 (test-group "parser"
   (test "parse entry without fields and notes"
