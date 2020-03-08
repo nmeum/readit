@@ -95,7 +95,7 @@
 ;;;;
 
 (define parse-info
-  (sequence* ((fields parse-fields)
+  (sequence* ((fields (maybe parse-fields '()))
               (notes  (maybe (preceded-by
                                (is #\newline)
                                parse-notes) '())))
