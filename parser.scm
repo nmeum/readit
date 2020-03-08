@@ -16,12 +16,15 @@
 ;; Utility functions
 ;;;;
 
+(define (parse-any-except char)
+  (as-string (one-or-more
+    (in (char-set-complement! (char-set char))))))
+
 (define parse-spaces
   (zero-or-more (in char-set:blank)))
 
 (define parse-text
-  (as-string (one-or-more
-    (in (char-set-complement! (char-set #\newline))))))
+  (parse-any-except #\newline))
 
 (define-syntax spaces-sequence*
   (syntax-rules ()
@@ -48,8 +51,7 @@
                           (is #\>))))
 
 (define parse-author
-  (as-string (one-or-more
-    (in (char-set-complement! (char-set #\:))))))
+  (parse-any-except #\:))
 
 (define parse-title
   parse-text)
@@ -59,8 +61,7 @@
 ;;;;
 
 (define parse-field-name
-  (as-string (one-or-more
-    (in (char-set-complement! (char-set #\:))))))
+  (parse-any-except #\:))
 
 ;; TODO: Add more elaborate field value types
 (define parse-field-value
