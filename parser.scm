@@ -1,0 +1,111 @@
+(import comparse srfi-14)
+
+;;;;
+;; Types
+;;;;
+
+(define-record-type metadata
+    (make-meta state key authors title)
+    metadata?
+    (state meta-state)
+    (key meta-key)
+    (authors meta-authors)
+    (title meta-title))
+
+;;;;
+;; Utility functions
+;;;;
+
+(define parse-spaces
+  (zero-or-more (in char-set:blank)))
+
+(define parse-text
+  (as-string (one-or-more
+    (in (char-set-complement! (char-set #\newline))))))
+
+;;;;
+;; Parsers for entry parts
+;;;;
+
+(define parse-state
+  (in (string->char-set "-x")))
+
+(define parse-key
+  (as-string (enclosed-by (is #\<)
+                          (one-or-more (in (char-set-union!
+                                             char-set:letter
+                                             char-set:digit
+                                             char-set:punctuation)))
+                          (is #\>))))
+
+(define parse-author
+  (as-string (one-or-more
+    (in (char-set-complement! (char-set #\:))))))
+
+(define parse-title
+  parse-text)
+
+;;;;
+;; Parsers for optional field values
+;;;;
+
+(define parse-field-name
+  (as-string (one-or-more
+    (in (char-set-complement! (char-set #\:))))))
+
+;; TODO: Add more elaborate field value types
+(define parse-field-value
+  parse-text)
+
+(define parse-field
+  (sequence* ((_     parse-spaces)
+              (_     (is #\*))
+              (_     parse-spaces)
+              (name  parse-field-name)
+              (_     (is #\:))
+              (_     parse-spaces)
+              (value parse-field-value)
+              (_     (is #\newline)))
+    (result (cons name value))))
+
+(define parse-fields
+  (zero-or-more parse-field))
+
+;;;;
+;; Parser for optional notes
+;;;;
+
+(define parse-note
+  (sequence* ((_    parse-spaces)
+              (_    (is #\*))
+              (_    parse-spaces)
+              (text parse-text)
+              (_    (is #\newline)))
+    (result text)))
+
+(define parse-notes
+  (zero-or-more parse-note))
+
+;;;;
+;; Combine utility parsers
+;;;;
+
+(define parse-info
+  (sequence* ((fields parse-fields)
+              (notes  (maybe (preceded-by
+                               (is #\newline)
+                               parse-notes) '())))
+    (result (list fields notes))))
+
+(define parse-entry
+  (sequence* ((state  parse-state)
+              (_      parse-spaces)
+              (key    parse-key)
+              (_      parse-spaces)
+              (author parse-author)
+              (_      (is #\:))
+              (_      parse-spaces)
+              (title  parse-title)
+              (_      (is #\newline))
+              (info   (maybe parse-info (list '() '()))))
+    (result (cons (make-meta state key author title) info))))
