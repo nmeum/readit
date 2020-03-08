@@ -1,5 +1,5 @@
 (load "parser.scm")
-(import comparse test)
+(import (readit parser) comparse test)
 
 (define (parse-file path)
   (call-with-input-file (string-append "testdata" "/" path)
