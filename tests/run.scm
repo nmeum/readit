@@ -7,13 +7,13 @@
 (test-group "parser"
   (test "parse entry without fields and notes"
     (list (make-meta #\-
-               "thompson1984trust"
+               'thompson1984trust
                "Reflections on Trusting Trust") '() '())
     (parse-file "thompson1984trust.txt"))
 
   (test "parse entry with fields and without notes"
     (list (make-meta #\x
-                     "chomsky1956hierarchy"
+                     'chomsky1956hierarchy
                      "Three models for the description of language")
           '(
             ("Author" . #("Noam Chomsky"))
@@ -24,7 +24,7 @@
 
   (test "parse entry without fields and with a single note"
     (list (make-meta #\-
-                     "mccarthy1960lisp"
+                     'mccarthy1960lisp
                      "Recursive functions of symbolic expressions and their computation by machine, part I")
           '()
           '("Introduces a programming system called LISP"))
@@ -32,7 +32,7 @@
 
   (test "parse entry with fields and notes"
     (list (make-meta #\-
-                     "landin1966languages"
+                     'landin1966languages
                      "The next 700 programming languages")
           '(("DOI" . "10.1145/365230.365257"))
           '(

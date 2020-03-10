@@ -2,7 +2,7 @@
 
 (module (readit parser)
   (parse-entry make-meta meta-state
-   meta-key meta-title)
+   meta-key meta-title parse-ref-literal)
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
@@ -11,6 +11,12 @@
     (state meta-state)
     (key meta-key)
     (title meta-title))
+
+  (define symbol-charset
+    (char-set-union
+      char-set:letter
+      char-set:digit
+      (->char-set "!$%&*+-./:<=>?@^_~")))
 
   ;;;;
   ;; Utility functions
@@ -49,13 +55,15 @@
                               (result elem)))
                  (is #\})))
 
+  (define parse-sym-literal
+    (bind (as-string
+            (all-of
+              (in (char-set-difference symbol-charset char-set:digit))
+              (zero-or-more (in symbol-charset))))
+          (lambda (str) (result (string->symbol str)))))
+
   (define parse-ref-literal
-    (as-string (enclosed-by (is #\<)
-                            (one-or-more (in (char-set-union!
-                                               char-set:letter
-                                               char-set:digit
-                                               char-set:punctuation)))
-                            (is #\>))))
+    (enclosed-by (is #\[) parse-sym-literal (is #\])))
 
   ;;;;
   ;; Parsers for entry parts

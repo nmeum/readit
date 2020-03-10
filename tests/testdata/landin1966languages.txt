@@ -1,4 +1,4 @@
-- <landin1966languages> The next 700 programming languages
+- [landin1966languages] The next 700 programming languages
 	* DOI: 10.1145/365230.365257
 
 	* Describes a family of unimplemented languages
