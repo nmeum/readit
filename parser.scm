@@ -24,7 +24,7 @@
 
   (define (parse-any-except char . chars)
     (as-string (one-or-more
-      (in (char-set-complement! (list->char-set
+      (in (char-set-complement (list->char-set
                                   (cons char chars)))))))
 
   (define parse-spaces
