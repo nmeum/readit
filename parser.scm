@@ -22,6 +22,13 @@
   ;; Utility functions
   ;;;;
 
+  (define parse-symbol
+    (bind (as-string
+            (all-of
+              (in (char-set-difference symbol-charset char-set:digit))
+              (zero-or-more (in symbol-charset))))
+          (lambda (str) (result (string->symbol str)))))
+
   (define (parse-any-except char . chars)
     (as-string (one-or-more
       (in (char-set-complement (list->char-set
@@ -55,15 +62,8 @@
                               (result elem)))
                  (is #\})))
 
-  (define parse-sym-literal
-    (bind (as-string
-            (all-of
-              (in (char-set-difference symbol-charset char-set:digit))
-              (zero-or-more (in symbol-charset))))
-          (lambda (str) (result (string->symbol str)))))
-
   (define parse-ref-literal
-    (enclosed-by (is #\[) parse-sym-literal (is #\])))
+    (enclosed-by (is #\[) parse-symbol (is #\])))
 
   ;;;;
   ;; Parsers for entry parts
