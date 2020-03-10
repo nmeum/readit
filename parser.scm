@@ -2,15 +2,14 @@
 
 (module (readit parser)
   (parse-entry make-meta meta-state
-   meta-key meta-authors meta-title)
+   meta-key meta-title)
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
-    (make-meta state key authors title)
+    (make-meta state key title)
     metadata?
     (state meta-state)
     (key meta-key)
-    (authors meta-authors)
     (title meta-title))
 
   ;;;;
@@ -50,9 +49,6 @@
                                                char-set:digit
                                                char-set:punctuation)))
                             (is #\>))))
-
-  (define parse-author
-    (parse-any-except #\:))
 
   (define parse-title
     parse-text)
@@ -106,9 +102,7 @@
   (define parse-entry
     (spaces-sequence* ((state  parse-state)
                        (key    parse-key)
-                       (author parse-author)
-                       (_      (is #\:))
                        (title  parse-title)
                        (_      (is #\newline))
                        (info   (maybe parse-info (list '() '()))))
-      (result (cons (make-meta state key author title) info)))))
+      (result (cons (make-meta state key title) info)))))
