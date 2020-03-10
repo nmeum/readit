@@ -18,15 +18,17 @@
       char-set:digit
       (->char-set "!$%&*+-./:<=>?@^_~")))
 
+  (define symbol-charset-start
+    (char-set-difference symbol-charset char-set:digit))
+
   ;;;;
   ;; Utility functions
   ;;;;
 
   (define parse-symbol
-    (bind (as-string
-            (all-of
-              (in (char-set-difference symbol-charset char-set:digit))
-              (zero-or-more (in symbol-charset))))
+    (bind (as-string (all-of
+                       (in symbol-charset-start)
+                       (zero-or-more (in symbol-charset))))
           (lambda (str) (result (string->symbol str)))))
 
   (define (parse-any-except char . chars)
