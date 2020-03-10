@@ -129,6 +129,7 @@
   (define parse-entry
     (spaces-sequence* ((state  parse-state)
                        (key    parse-ref-literal)
+                       (_      (is #\:))
                        (title  parse-title)
                        (_      (is #\newline))
                        (info   (maybe parse-info (list '() '()))))
