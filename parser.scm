@@ -74,15 +74,6 @@
   (define parse-state
     (in (string->char-set "-x")))
 
-  ;; TODO: Support escaping for data transparency
-  (define parse-set-literal
-    (enclosed-by (is #\{)
-                 (zero-or-more
-                   (sequence* ((elem (parse-any-except #\, #\}))
-                               (_    (maybe (is #\,))))
-                              (result elem)))
-                 (is #\})))
-
   (define parse-title
     parse-text)
 
