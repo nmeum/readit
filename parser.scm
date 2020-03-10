@@ -16,9 +16,10 @@
   ;; Utility functions
   ;;;;
 
-  (define (parse-any-except char)
+  (define (parse-any-except char . chars)
     (as-string (one-or-more
-      (in (char-set-complement! (char-set char))))))
+      (in (char-set-complement! (list->char-set
+                                  (cons char chars)))))))
 
   (define parse-spaces
     (zero-or-more (in char-set:blank)))
@@ -36,19 +37,41 @@
                 (spaces-sequence* (more-bindings ...) body ...))))))
 
   ;;;;
-  ;; Parsers for entry parts
+  ;; Parser for literals
   ;;;;
 
-  (define parse-state
-    (in (string->char-set "-x")))
+  ;; TODO: Support escaping for data transparency
+  (define parse-set-literal
+    (enclosed-by (is #\{)
+                 (zero-or-more
+                   (sequence* ((elem (parse-any-except #\, #\}))
+                               (_    (maybe (is #\,))))
+                              (result elem)))
+                 (is #\})))
 
-  (define parse-key
+  (define parse-ref-literal
     (as-string (enclosed-by (is #\<)
                             (one-or-more (in (char-set-union!
                                                char-set:letter
                                                char-set:digit
                                                char-set:punctuation)))
                             (is #\>))))
+
+  ;;;;
+  ;; Parsers for entry parts
+  ;;;;
+
+  (define parse-state
+    (in (string->char-set "-x")))
+
+  ;; TODO: Support escaping for data transparency
+  (define parse-set-literal
+    (enclosed-by (is #\{)
+                 (zero-or-more
+                   (sequence* ((elem (parse-any-except #\, #\}))
+                               (_    (maybe (is #\,))))
+                              (result elem)))
+                 (is #\})))
 
   (define parse-title
     parse-text)
@@ -62,7 +85,10 @@
 
   ;; TODO: Add more elaborate field value types
   (define parse-field-value
-    parse-text)
+    (any-of
+      (bind parse-set-literal
+            (lambda (lst) (result (list->vector lst))))
+      parse-text))
 
   (define parse-field
     (spaces-sequence* ((_     (is #\*))
@@ -101,7 +127,7 @@
 
   (define parse-entry
     (spaces-sequence* ((state  parse-state)
-                       (key    parse-key)
+                       (key    parse-ref-literal)
                        (title  parse-title)
                        (_      (is #\newline))
                        (info   (maybe parse-info (list '() '()))))

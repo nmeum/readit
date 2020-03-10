@@ -16,7 +16,7 @@
                      "chomsky1956hierarchy"
                      "Three models for the description of language")
           '(
-            ("Author" . "{Noam Chomsky}")
+            ("Author" . #("Noam Chomsky"))
             ("DOI" . "10.1109/TIT.1956.1056813")
            )
           '())
