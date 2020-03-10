@@ -56,13 +56,16 @@
   ;;;;
 
   ;; TODO: Support escaping for data transparency
+  (define parse-set-element
+    (zero-or-more
+      (sequence* ((elem (parse-any-except #\, #\}))
+                  (_    (maybe (is #\,))))
+                 (result elem))))
+
   (define parse-set-literal
-    (enclosed-by (is #\{)
-                 (zero-or-more
-                   (sequence* ((elem (parse-any-except #\, #\}))
-                               (_    (maybe (is #\,))))
-                              (result elem)))
-                 (is #\})))
+    (bind (enclosed-by (is #\{) parse-set-element (is #\}))
+          (lambda (lst)
+            (result (list->vector lst)))))
 
   (define parse-ref-literal
     (enclosed-by (is #\[) parse-symbol (is #\])))
@@ -84,12 +87,10 @@
   (define parse-field-name
     (parse-any-except #\:))
 
-  ;; TODO: Add more elaborate field value types
+  ;; TODO: Add support for reference literal
   (define parse-field-value
-    (any-of
-      (bind parse-set-literal
-            (lambda (lst) (result (list->vector lst))))
-      parse-text))
+    (any-of parse-set-literal
+            parse-text))
 
   (define parse-field
     (spaces-sequence* ((_     (is #\*))
