@@ -66,15 +66,18 @@
   ;; Parser for literals
   ;;;;
 
-  ;; TODO: Skip spaces around , in literals
-  (define parse-set-element
+  ;; TODO: Skip spaces around sperator
+  (define (parse-list parser #!optional (sep (is #\,)))
     (zero-or-more
-      (sequence* ((elem (parse-escaped '(#\, #\})))
-                  (_    (maybe (is #\,))))
-                 (result elem))))
+      (sequence* ((elem parser)
+                  (_    (maybe sep)))
+        (result elem))))
+
+  (define parse-set-elements
+    (parse-list (parse-escaped '(#\, #\}))))
 
   (define parse-set-literal
-    (bind (enclosed-by (is #\{) parse-set-element (is #\}))
+    (bind (enclosed-by (is #\{) parse-set-elements (is #\}))
           (lambda (lst)
             (result (list->vector lst)))))
 
