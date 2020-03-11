@@ -1,5 +1,5 @@
-(import (chicken process-context) (chicken file)
-        (readit parser) srfi-1 srfi-37)
+(import (chicken process-context) (chicken file) (chicken format)
+        matchable (readit parser) srfi-1 srfi-37)
 
 (define names '())
 
@@ -40,6 +40,18 @@
     cons
     '()))
 
+(define (field-filter names)
+  (lambda (field)
+    (match-let (((fkey . _) field))
+      (any (lambda (name)
+             (equal? name fkey)) names))))
+
+(define (filter-entries entries names)
+  (fold (lambda (entry fields)
+          (match-let (((_ f _) entry))
+            (append (filter (field-filter names) f) fields)))
+        '() entries))
+
 (define (main)
   (let ((fps (parse-args)))
     (when (null? fps)
@@ -49,7 +61,10 @@
                 (unless (file-exists? fp)
                   (error "file does not exist" file))) fps)
 
-    (print (parse-files fps))))
+    (let* ((entries (parse-files fps))
+           (fields  (filter-entries entries names)))
+      (for-each (lambda (field)
+        (printf "~A:~A~%" (car field) (cdr field))) fields))))
 
 (cond-expand
   ((or chicken-script compiling) (main))
