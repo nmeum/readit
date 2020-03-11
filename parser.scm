@@ -31,17 +31,6 @@
                        (zero-or-more (in symbol-charset))))
           (lambda (str) (result (string->symbol str)))))
 
-  (define (parse-escaped ctrl-chars)
-    (define parse-char
-      (any-of
-        (sequence* ((_ (is #\\))
-                    (i item))
-          (result i))
-        (in (char-set-complement (list->char-set ctrl-chars)))))
-
-    (as-string (one-or-more parse-char)))
-
-
   (define (parse-any-except char . chars)
     (as-string (one-or-more
       (in (char-set-complement (list->char-set
@@ -65,6 +54,16 @@
   ;;;;
   ;; Parser for literals
   ;;;;
+
+  (define (parse-escaped ctrl-chars)
+    (define parse-char
+      (any-of
+        (sequence* ((_ (is #\\))
+                    (i item))
+          (result i))
+        (in (char-set-complement (list->char-set ctrl-chars)))))
+
+    (as-string (one-or-more parse-char)))
 
   (define (parse-list parser #!optional (sep (is #\,)))
     (zero-or-more
