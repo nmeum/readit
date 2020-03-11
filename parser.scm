@@ -2,7 +2,7 @@
 
 (module (readit parser)
   (parse-entry make-meta meta-state
-   meta-key meta-title parse-ref)
+   meta-key meta-title)
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
