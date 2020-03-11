@@ -66,11 +66,11 @@
   ;; Parser for literals
   ;;;;
 
-  ;; TODO: Skip spaces around sperator
   (define (parse-list parser #!optional (sep (is #\,)))
     (zero-or-more
       (sequence* ((elem parser)
-                  (_    (maybe sep)))
+                  (_    (maybe sep))
+                  (_    parse-spaces))
         (result elem))))
 
   (define parse-set-elements
