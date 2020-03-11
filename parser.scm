@@ -101,7 +101,6 @@
   (define parse-field-name
     (parse-any-except #\:))
 
-  ;; TODO: Add support for reference literal
   (define parse-field-value
     (any-of
       parse-set-literal
