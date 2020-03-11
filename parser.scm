@@ -1,9 +1,7 @@
-(import comparse srfi-14)
-
 (module (readit parser)
   (make-meta meta-state meta-key meta-title
    parse-readit readit-ref? readit-set?)
-  (import scheme (chicken base) comparse srfi-14)
+  (import scheme (chicken base) comparse srfi-1 srfi-14)
 
   (define-record-type metadata
     (make-meta state key title)
@@ -11,6 +9,19 @@
     (state meta-state)
     (key meta-key)
     (title meta-title))
+
+  (define-record-printer (metadata input port)
+    (define (join . strings)
+      (fold (lambda (str output)
+              (string-append
+                (if (> (string-length output) 0)
+                  (string-append output " ")
+                  output) str)) "" strings))
+
+    (display (join
+               (string (meta-state input))
+               (string-append "[" (symbol->string (meta-key input)) "]:")
+               (meta-title input))))
 
   (define symbol-charset
     (char-set-union
