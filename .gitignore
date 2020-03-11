@@ -1,0 +1,5 @@
+readit
+*.sh
+*.import.scm
+*.link
+*.so
