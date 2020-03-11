@@ -1,7 +1,8 @@
 (import (chicken process-context) (chicken file) (chicken format)
         matchable (readit parser) srfi-1 srfi-37)
 
-(define names '())
+(define names '())  ;; or
+(define fvals '()) ;; and
 
 (define help
   (option
@@ -14,6 +15,13 @@
     '(#\n "name") #t #t
     (lambda (o n x vals)
       (set! names (cons x names))
+      vals)))
+
+(define value
+  (option
+    '(#\v "value") #t #t
+    (lambda (o n x vals)
+      (set! fvals (cons x fvals))
       vals)))
 
 (define (usage)
@@ -34,23 +42,36 @@
 (define (parse-args)
   (args-fold
     (command-line-arguments)
-    (list help name)
+    (list help name value)
     (lambda (o n x vals)
       (error "unrecognized option" n))
     cons
     '()))
 
-(define (field-filter names)
-  (lambda (field)
-    (match-let (((fkey . _) field))
-      (any (lambda (name)
-             (equal? name fkey)) names))))
+;; TODO: match regex
+;; TODO: optionally ignore case during matches
+(define (field-matches? fval str)
+  (cond ((readit-ref? fval) #f)
+        ((readit-set? fval)
+         (any (lambda (e) (equal? e str)) (vector->list fval)))
+        (else (equal? fval str))))
 
-(define (filter-entries entries names)
-  (fold (lambda (entry fields)
-          (match-let (((_ f _) entry))
-            (append (filter (field-filter names) f) fields)))
-        '() entries))
+(define (filter-fields fields names vals)
+  (filter (lambda (field)
+            (match-let (((key . val) field))
+              (and
+                (any (lambda (n) (equal? key n)) names)
+                (every (lambda (v) (field-matches? val v)) vals))))
+          fields))
+
+(define (fold-entries entries names vals)
+  (fold (lambda (entry mod-entries)
+    (match-let (((meta fields notes) entry))
+      (append (list
+                (list meta
+                      (filter-fields fields names vals)
+                      notes))
+              mod-entries))) '() entries))
 
 (define (main)
   (let ((fps (parse-args)))
@@ -59,12 +80,20 @@
 
     (for-each (lambda (fp)
                 (unless (file-exists? fp)
-                  (error "file does not exist" file))) fps)
+                  (error "file does not exist" fp))) fps)
 
-    (let* ((entries (parse-files fps))
-           (fields  (filter-entries entries names)))
-      (for-each (lambda (field)
-        (printf "~A:~A~%" (car field) (cdr field))) fields))))
+    (let* ((entries  (parse-files fps))
+           (filtered (fold-entries entries names fvals)))
+      (for-each (lambda (entry)
+                  (match-let (((meta fields _) entry))
+                             (if (null? fvals)
+                               (for-each (lambda (f)
+                                           (print (car f) ":" (cdr f)))
+                                         fields)
+                               (unless (null? fields)
+                                 (display meta)
+                                 (newline)))))
+                filtered))))
 
 (cond-expand
   ((or chicken-script compiling) (main))
