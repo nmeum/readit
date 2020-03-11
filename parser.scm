@@ -92,8 +92,10 @@
 
   ;; TODO: Add support for reference literal
   (define parse-field-value
-    (any-of parse-set-literal
-            parse-text))
+    (any-of
+      parse-set-literal
+      parse-ref-literal
+      parse-text))
 
   (define parse-field
     (spaces-sequence* ((_     (is #\*))

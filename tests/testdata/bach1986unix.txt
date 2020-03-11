@@ -1,0 +1,2 @@
+x [bach1986unix]: The Design of the UNIX Operating System
+	* References: [ritchie1974unix]

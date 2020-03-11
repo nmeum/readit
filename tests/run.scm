@@ -33,6 +33,16 @@
           '())
     (parse-file "ritchie1974unix.txt"))
 
+  (test "parse entry with ref fields"
+    (list (make-meta #\x
+                     'bach1986unix
+                     "The Design of the UNIX Operating System")
+          '(
+            ("References" . ritchie1974unix)
+           )
+          '())
+    (parse-file "bach1986unix.txt"))
+
   (test "parse entry without fields and with a single note"
     (list (make-meta #\-
                      'mccarthy1960lisp
