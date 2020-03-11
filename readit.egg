@@ -1,7 +1,7 @@
 ((author "Sören Tempel")
  (synopsis "A tracker for reading material")
  (license "GPLv3")
- (dependencies comparse srfi-14 srfi-37)
+ (dependencies comparse srfi-1 srfi-14 srfi-37)
  (test-dependencies test)
  (components
    (program readit)

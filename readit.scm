@@ -1,4 +1,5 @@
-(import (chicken process-context) srfi-37)
+(import (chicken process-context) (chicken file)
+        (readit parser) srfi-1 srfi-37)
 
 (define names '())
 
@@ -19,6 +20,17 @@
   (print "Usage: readit [-n NAME] FILE...")
   (exit))
 
+(define (parse-file path)
+  (call-with-input-file path
+    (lambda (port)
+      (let ((r (parse-readit port)))
+        (if r r (error "syntax error in" fp))))))
+
+(define (parse-files fps)
+  (fold (lambda (fp entries)
+          (append (parse-file fp) entries))
+        '() fps))
+
 (define (parse-args)
   (args-fold
     (command-line-arguments)
@@ -29,11 +41,15 @@
     '()))
 
 (define (main)
-  (let ((files (parse-args)))
-    (if (null? files)
-      (usage)
-      (begin
-        (print names)))))
+  (let ((fps (parse-args)))
+    (when (null? fps)
+      (usage))
+
+    (for-each (lambda (fp)
+                (unless (file-exists? fp)
+                  (error "file does not exist" file))) fps)
+
+    (print (parse-files fps))))
 
 (cond-expand
   ((or chicken-script compiling) (main))
