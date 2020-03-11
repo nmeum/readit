@@ -16,11 +16,22 @@
                      'chomsky1956hierarchy
                      "Three models for the description of language")
           '(
-            ("Author" . #("Noam Chomsky"))
+            ("Importance" . "High")
             ("DOI" . "10.1109/TIT.1956.1056813")
            )
           '())
     (parse-file "chomsky1956hierarchy.txt"))
+
+  (test "parse entry with set fields"
+    (list (make-meta #\x
+                     'ritchie1974unix
+                     "The UNIX Time-Sharing System")
+          '(
+            ("Authors" . #("Dennis M. Ritchie" "Ken Thompson"))
+            ("Topics" . #("UNIX"))
+           )
+          '())
+    (parse-file "ritchie1974unix.txt"))
 
   (test "parse entry without fields and with a single note"
     (list (make-meta #\-
