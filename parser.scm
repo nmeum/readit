@@ -77,14 +77,15 @@
           (lambda (lst)
             (result (list->vector lst)))))
 
-  (define parse-set-elements
-    (parse-vector (parse-escaped '(#\, #\}))))
-
   (define parse-set
-    (enclosed-by (is #\{) parse-set-elements (is #\})))
+    (enclosed-by (is #\{)
+                 (parse-vector (parse-escaped '(#\, #\})))
+                 (is #\})))
 
   (define parse-ref
-    (enclosed-by (is #\[) (parse-vector parse-symbol) (is #\])))
+    (enclosed-by (is #\[)
+                 (parse-vector parse-symbol)
+                 (is #\])))
 
   ;;;;
   ;; Parsers for entry parts
