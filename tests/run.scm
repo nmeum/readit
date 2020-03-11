@@ -33,6 +33,20 @@
           '())
     (parse-file "ritchie1974unix.txt"))
 
+  (test "parse entry with escaped set fields"
+    (list (make-meta #\-
+                     'bratus2015bugs
+                     "The Bugs We Have to Kill")
+          '(
+            ("Escaped Comma" . #("foo,bar"))
+            ("Escaped Bracket" . #("foo{bar}"))
+            ("Escaped Backslash" . #("foo\\bar"))
+            ("Escaped All" . #("foobar"))
+            ("Escaped Multiple" . #("foo," "bar"))
+           )
+          '())
+    (parse-file "bratus2015bugs.txt"))
+
   (test "parse entry with ref fields"
     (list (make-meta #\x
                      'bach1986unix

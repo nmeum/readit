@@ -31,6 +31,17 @@
                        (zero-or-more (in symbol-charset))))
           (lambda (str) (result (string->symbol str)))))
 
+  (define (parse-escaped ctrl-chars)
+    (define parse-char
+      (any-of
+        (sequence* ((_ (is #\\))
+                    (i item))
+          (result i))
+        (in (char-set-complement (list->char-set ctrl-chars)))))
+
+    (as-string (one-or-more parse-char)))
+
+
   (define (parse-any-except char . chars)
     (as-string (one-or-more
       (in (char-set-complement (list->char-set
@@ -56,11 +67,9 @@
   ;;;;
 
   ;; TODO: Skip spaces around , in literals
-
-  ;; TODO: Support escaping for data transparency
   (define parse-set-element
     (zero-or-more
-      (sequence* ((elem (parse-any-except #\, #\}))
+      (sequence* ((elem (parse-escaped '(#\, #\})))
                   (_    (maybe (is #\,))))
                  (result elem))))
 

@@ -1,0 +1,6 @@
+- [bratus2015bugs]: The Bugs We Have to Kill
+	* Escaped Comma: {foo\,bar}
+	* Escaped Bracket: {foo{bar\}}
+	* Escaped Backslash: {foo\\bar}
+	* Escaped All: {\f\o\o\b\a\r}
+	* Escaped Multiple: {foo\,,bar}
