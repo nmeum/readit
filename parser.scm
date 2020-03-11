@@ -83,9 +83,8 @@
   (define parse-set
     (enclosed-by (is #\{) parse-set-elements (is #\})))
 
-  ;; TODO: Allow multiple symbols
   (define parse-ref
-    (enclosed-by (is #\[) parse-symbol (is #\])))
+    (enclosed-by (is #\[) (parse-vector parse-symbol) (is #\])))
 
   ;;;;
   ;; Parsers for entry parts
@@ -93,6 +92,9 @@
 
   (define parse-state
     (in (string->char-set "-x")))
+
+  (define parse-key
+    (enclosed-by (is #\[) parse-symbol (is #\])))
 
   (define parse-title
     parse-text)
@@ -147,7 +149,7 @@
 
   (define parse-entry
     (spaces-sequence* ((state  parse-state)
-                       (key    parse-ref)
+                       (key    parse-key)
                        (_      (is #\:))
                        (title  parse-title)
                        (_      (is #\newline))

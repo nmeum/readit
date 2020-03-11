@@ -52,7 +52,8 @@
                      'bach1986unix
                      "The Design of the UNIX Operating System")
           '(
-            ("References" . ritchie1974unix)
+            ("Related" . #(ritchie1974unix))
+            ("References" . #(dijkstra68sequential pike84blit))
            )
           '())
     (parse-file "bach1986unix.txt"))
