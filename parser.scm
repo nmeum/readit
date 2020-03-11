@@ -2,7 +2,7 @@
 
 (module (readit parser)
   (parse-entry make-meta meta-state
-   meta-key meta-title parse-ref-literal)
+   meta-key meta-title parse-ref)
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
@@ -80,11 +80,11 @@
   (define parse-set-elements
     (parse-vector (parse-escaped '(#\, #\}))))
 
-  (define parse-set-literal
+  (define parse-set
     (enclosed-by (is #\{) parse-set-elements (is #\})))
 
   ;; TODO: Allow multiple symbols
-  (define parse-ref-literal
+  (define parse-ref
     (enclosed-by (is #\[) parse-symbol (is #\])))
 
   ;;;;
@@ -106,8 +106,8 @@
 
   (define parse-field-value
     (any-of
-      parse-set-literal
-      parse-ref-literal
+      parse-set
+      parse-ref
       parse-text))
 
   (define parse-field
@@ -147,7 +147,7 @@
 
   (define parse-entry
     (spaces-sequence* ((state  parse-state)
-                       (key    parse-ref-literal)
+                       (key    parse-ref)
                        (_      (is #\:))
                        (title  parse-title)
                        (_      (is #\newline))
