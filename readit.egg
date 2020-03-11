@@ -1,7 +1,9 @@
 ((author "Sören Tempel")
  (synopsis "A tracker for reading material")
  (license "GPLv3")
- (dependencies comparse srfi-14)
+ (dependencies comparse srfi-14 srfi-37)
  (test-dependencies test)
- (components (extension readit.parser
-                        (source "parser.scm"))))
+ (components
+   (program readit)
+   (extension readit.parser
+              (source "parser.scm"))))
