@@ -65,11 +65,11 @@
 
     (as-string (one-or-more parse-char)))
 
-  (define (parse-vector parser #!optional (sep (is #\,)))
+  (define (parse-vector parser)
     (define (parse-vector*)
       (zero-or-more
         (sequence* ((elem parser)
-                    (_    (maybe sep))
+                    (_    (maybe (is #\,)))
                     (_    parse-spaces))
           (result elem))))
 
