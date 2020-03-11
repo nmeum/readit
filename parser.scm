@@ -66,7 +66,7 @@
 
   (define (parse-vector parser)
     (define (parse-vector*)
-      (zero-or-more
+      (one-or-more
         (sequence* ((elem parser)
                     (_    (maybe (is #\,)))
                     (_    parse-spaces))
