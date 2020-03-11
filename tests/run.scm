@@ -82,6 +82,36 @@
             "Describes a family of unimplemented languages"
             "Focuses on expression-based languages"
            ))
-    (parse-entry "landin1966languages.txt")))
+    (parse-entry "landin1966languages.txt"))
+
+  (test "parse multiple entries"
+    (list
+      (list (make-meta #\-
+                       'liedtke1995microkernel
+                       "On μ-kernel construction") '() '())
+      (list (make-meta #\-
+                       'basili1984complexity
+                       "Software Errors and Complexity: An Empirical Investigation")
+            '(
+              ("Authors" . #("Victor R. Basili" "Barry T. Perricone"))
+              ("DOI" . "10.1145/69605.2085")
+              ("Topics" . #("Software Engineering"))
+             )
+            '())
+      (list (make-meta #\x
+                       'tanenbaum2006secure
+                       "Can We Make Operating Systems Reliable and Secure?")
+            '(
+              ("Authors" . #("Andrew S. Tanenbaum" "Jorrit N. Herder" "Herbert Bos"))
+              ("DOI" . "10.1109/MC.2006.156")
+              ("Topics" . #("Computer Security" "Operating Systems"))
+              ("References" . #(basili1984complexity liedtke1995microkernel))
+             )
+            '(
+              "Discusses techniques for improving the security of operating systems"
+              "Emphasises the importance of isolation mechanisms"
+              "Has a focus on microkernel architectures"
+             )))
+    (parse-entries "example.txt")))
 
 (test-exit)
