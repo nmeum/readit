@@ -1,8 +1,7 @@
 (import comparse srfi-14)
 
 (module (readit parser)
-  (parse-entry make-meta meta-state
-   meta-key meta-title)
+  (parse-readit make-meta meta-state meta-key meta-title)
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
@@ -155,4 +154,16 @@
                        (title  parse-title)
                        (_      (is #\newline))
                        (info   (maybe parse-info (list '() '()))))
-      (result (cons (make-meta state key title) info)))))
+      (result (cons (make-meta state key title) info))))
+
+  (define parse-entries
+    (zero-or-more (preceded-by
+                    (zero-or-more (in char-set:whitespace))
+                    parse-entry)))
+
+  ;;;;
+  ;; Interface functions
+  ;;;;
+
+  (define (parse-readit input)
+    (parse parse-entries input)))

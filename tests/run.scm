@@ -1,15 +1,22 @@
-(import (readit parser) comparse test)
+(import (readit parser) test)
 
 (define (parse-file path)
   (call-with-input-file (string-append "testdata" "/" path)
-    (lambda (port) (parse parse-entry port))))
+    (lambda (port) (parse-readit port))))
+
+(define (parse-entries path)
+  (let ((r (parse-file path)))
+    (if r r (error "syntax error"))))
+
+(define (parse-entry path)
+  (car (parse-entries path)))
 
 (test-group "parser"
   (test "parse entry without fields and notes"
     (list (make-meta #\-
                'thompson1984trust
                "Reflections on Trusting Trust") '() '())
-    (parse-file "thompson1984trust.txt"))
+    (parse-entry "thompson1984trust.txt"))
 
   (test "parse entry with fields and without notes"
     (list (make-meta #\x
@@ -20,7 +27,7 @@
             ("DOI" . "10.1109/TIT.1956.1056813")
            )
           '())
-    (parse-file "chomsky1956hierarchy.txt"))
+    (parse-entry "chomsky1956hierarchy.txt"))
 
   (test "parse entry with set fields"
     (list (make-meta #\x
@@ -31,7 +38,7 @@
             ("Topics" . #("UNIX"))
            )
           '())
-    (parse-file "ritchie1974unix.txt"))
+    (parse-entry "ritchie1974unix.txt"))
 
   (test "parse entry with escaped set fields"
     (list (make-meta #\-
@@ -45,7 +52,7 @@
             ("Escaped Multiple" . #("foo," "bar"))
            )
           '())
-    (parse-file "bratus2015bugs.txt"))
+    (parse-entry "bratus2015bugs.txt"))
 
   (test "parse entry with ref fields"
     (list (make-meta #\x
@@ -56,7 +63,7 @@
             ("References" . #(dijkstra68sequential pike84blit))
            )
           '())
-    (parse-file "bach1986unix.txt"))
+    (parse-entry "bach1986unix.txt"))
 
   (test "parse entry without fields and with a single note"
     (list (make-meta #\-
@@ -64,7 +71,7 @@
                      "Recursive functions of symbolic expressions and their computation by machine, part I")
           '()
           '("Introduces a programming system called LISP"))
-    (parse-file "mccarthy1960lisp.txt"))
+    (parse-entry "mccarthy1960lisp.txt"))
 
   (test "parse entry with fields and notes"
     (list (make-meta #\-
@@ -75,6 +82,6 @@
             "Describes a family of unimplemented languages"
             "Focuses on expression-based languages"
            ))
-    (parse-file "landin1966languages.txt")))
+    (parse-entry "landin1966languages.txt")))
 
 (test-exit)
