@@ -65,20 +65,23 @@
 
     (as-string (one-or-more parse-char)))
 
-  (define (parse-list parser #!optional (sep (is #\,)))
-    (zero-or-more
-      (sequence* ((elem parser)
-                  (_    (maybe sep))
-                  (_    parse-spaces))
-        (result elem))))
+  (define (parse-vector parser #!optional (sep (is #\,)))
+    (define (parse-vector*)
+      (zero-or-more
+        (sequence* ((elem parser)
+                    (_    (maybe sep))
+                    (_    parse-spaces))
+          (result elem))))
 
-  (define parse-set-elements
-    (parse-list (parse-escaped '(#\, #\}))))
-
-  (define parse-set-literal
-    (bind (enclosed-by (is #\{) parse-set-elements (is #\}))
+    (bind (parse-vector*)
           (lambda (lst)
             (result (list->vector lst)))))
+
+  (define parse-set-elements
+    (parse-vector (parse-escaped '(#\, #\}))))
+
+  (define parse-set-literal
+    (enclosed-by (is #\{) parse-set-elements (is #\})))
 
   ;; TODO: Allow multiple symbols
   (define parse-ref-literal
