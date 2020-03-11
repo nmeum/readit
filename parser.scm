@@ -55,6 +55,8 @@
   ;; Parser for literals
   ;;;;
 
+  ;; TODO: Skip spaces around , in literals
+
   ;; TODO: Support escaping for data transparency
   (define parse-set-element
     (zero-or-more
@@ -67,6 +69,7 @@
           (lambda (lst)
             (result (list->vector lst)))))
 
+  ;; TODO: Allow multiple symbols
   (define parse-ref-literal
     (enclosed-by (is #\[) parse-symbol (is #\])))
 
