@@ -1,7 +1,8 @@
 (import comparse srfi-14)
 
 (module (readit parser)
-  (parse-readit make-meta meta-state meta-key meta-title)
+  (make-meta meta-state meta-key meta-title
+   parse-readit readit-ref? readit-set?)
   (import scheme (chicken base) comparse srfi-14)
 
   (define-record-type metadata
@@ -164,6 +165,16 @@
   ;;;;
   ;; Interface functions
   ;;;;
+
+  (define (readit-ref? obj)
+    (and (vector? obj)
+         (>= (vector-length obj) 1)
+         (symbol? (vector-ref obj 0))))
+
+  (define (readit-set? obj)
+    (and (vector? obj)
+         (>= (vector-length obj) 1)
+         (string? (vector-ref obj 0))))
 
   (define (parse-readit input)
     (parse parse-entries input)))
