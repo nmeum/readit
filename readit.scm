@@ -1,8 +1,8 @@
 (import (chicken process-context) (chicken file) (chicken format)
         matchable (readit parser) srfi-1 srfi-37)
 
-(define names '())  ;; or
-(define fvals '()) ;; and
+(define files '())
+(define fvals '())
 
 (define help
   (option
@@ -10,11 +10,11 @@
     (lambda _
       (usage))))
 
-(define name
+(define file
   (option
-    '(#\n "name") #t #t
+    '(#\f "file") #t #t
     (lambda (o n x vals)
-      (set! names (cons x names))
+      (set! files (cons x files))
       vals)))
 
 (define value
@@ -25,7 +25,7 @@
       vals)))
 
 (define (usage)
-  (print "Usage: readit [-n NAME] FILE...")
+  (print "Usage: readit [-f FILE] [-v VALUE] NAME")
   (exit))
 
 (define (parse-file path)
@@ -42,7 +42,7 @@
 (define (parse-args)
   (args-fold
     (command-line-arguments)
-    (list help name value)
+    (list help file value)
     (lambda (o n x vals)
       (error "unrecognized option" n))
     cons
@@ -56,31 +56,31 @@
          (any (lambda (e) (equal? e str)) (vector->list fval)))
         (else (equal? fval str))))
 
-(define (filter-fields fields names vals)
+(define (filter-fields fields name vals)
   (filter (lambda (field)
             (match-let (((key . val) field))
               (and
-                (any (lambda (n) (equal? key n)) names)
+                (equal? key name)
                 (every (lambda (v) (field-matches? val v)) vals))))
           fields))
 
-(define (filter-entries entries names vals)
+(define (filter-entries entries name vals)
   (filter (lambda (entry)
             (match-let (((_ fields _) entry))
-              (not (null? (filter-fields fields names vals)))))
+              (not (null? (filter-fields fields name vals)))))
           entries))
 
 (define (main)
-  (let ((fps (parse-args)))
-    (when (null? fps)
+  (let* ((args (parse-args)))
+    (when (not (equal? (length args) 1))
       (usage))
 
     (for-each (lambda (fp)
                 (unless (file-exists? fp)
-                  (error "file does not exist" fp))) fps)
+                  (error "file does not exist" fp))) files)
 
-    (let* ((entries  (parse-files fps))
-           (filtered (filter-entries entries names fvals)))
+    (let* ((entries  (parse-files files))
+           (filtered (filter-entries entries (car args) fvals)))
       (for-each (lambda (entry)
                   (match-let (((meta fields _) entry))
                     (unless (null? fields)
