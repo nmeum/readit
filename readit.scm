@@ -64,14 +64,11 @@
                 (every (lambda (v) (field-matches? val v)) vals))))
           fields))
 
-(define (fold-entries entries names vals)
-  (fold (lambda (entry mod-entries)
-    (match-let (((meta fields notes) entry))
-      (append (list
-                (list meta
-                      (filter-fields fields names vals)
-                      notes))
-              mod-entries))) '() entries))
+(define (filter-entries entries names vals)
+  (filter (lambda (entry)
+            (match-let (((_ fields _) entry))
+              (not (null? (filter-fields fields names vals)))))
+          entries))
 
 (define (main)
   (let ((fps (parse-args)))
@@ -83,16 +80,11 @@
                   (error "file does not exist" fp))) fps)
 
     (let* ((entries  (parse-files fps))
-           (filtered (fold-entries entries names fvals)))
+           (filtered (filter-entries entries names fvals)))
       (for-each (lambda (entry)
                   (match-let (((meta fields _) entry))
-                             (if (null? fvals)
-                               (for-each (lambda (f)
-                                           (print (car f) ":" (cdr f)))
-                                         fields)
-                               (unless (null? fields)
-                                 (display meta)
-                                 (newline)))))
+                    (unless (null? fields)
+                      (print meta))))
                 filtered))))
 
 (cond-expand
