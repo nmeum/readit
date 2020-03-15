@@ -180,12 +180,12 @@
   (define (readit-ref? obj)
     (and (vector? obj)
          (>= (vector-length obj) 1)
-         (symbol? (vector-ref obj 0))))
+         (every symbol? (vector->list obj))))
 
   (define (readit-set? obj)
     (and (vector? obj)
          (>= (vector-length obj) 1)
-         (string? (vector-ref obj 0))))
+         (every string? (vector->list obj))))
 
   (define (parse-readit input)
     (parse parse-entries input)))
