@@ -169,9 +169,9 @@
       (result (cons (make-meta state key title) info))))
 
   (define parse-entries
-    (zero-or-more (preceded-by
-                    (zero-or-more (in char-set:whitespace))
-                    parse-entry)))
+    (one-or-more (preceded-by
+                   (zero-or-more (in char-set:whitespace))
+                   parse-entry)))
 
   ;;;;
   ;; Interface functions
