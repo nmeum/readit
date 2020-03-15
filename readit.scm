@@ -3,12 +3,20 @@
 
 (define files '())
 (define fvals '())
+(define state '())
 
 (define help
   (option
     '(#\h "help") #f #f
     (lambda _
       (usage))))
+
+(define done
+  (option
+    '(#\x "exclude-done") #f #f
+    (lambda (o n x vals)
+      (set! state #\-)
+      vals)))
 
 (define file
   (option
@@ -25,7 +33,7 @@
       vals)))
 
 (define (usage)
-  (print "Usage: readit [-f FILE] [-v VALUE] NAME")
+  (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
   (exit))
 
 (define (parse-file path)
@@ -42,7 +50,7 @@
 (define (parse-args)
   (args-fold
     (command-line-arguments)
-    (list help file value)
+    (list help done file value)
     (lambda (o n x vals)
       (error "unrecognized option" n))
     cons
@@ -64,10 +72,12 @@
                 (every (lambda (v) (field-matches? val v)) vals))))
           fields))
 
-(define (filter-entries entries name vals)
+(define (filter-entries entries state name vals)
   (filter (lambda (entry)
-            (match-let (((_ fields _) entry))
-              (not (null? (filter-fields fields name vals)))))
+            (match-let (((meta fields _) entry))
+              (and
+                (or (null? state) (eqv? (meta-state meta) state))
+                (not (null? (filter-fields fields name vals))))))
           entries))
 
 (define (main)
@@ -80,7 +90,7 @@
                   (error "file does not exist" fp))) files)
 
     (let* ((entries  (parse-files files))
-           (filtered (filter-entries entries (car args) fvals)))
+           (filtered (filter-entries entries state (car args) fvals)))
       (for-each (lambda (entry)
                   (match-let (((meta fields _) entry))
                     (unless (null? fields)
