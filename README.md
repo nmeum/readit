@@ -105,7 +105,7 @@ To find all publications written by both `Carsten Bormann` and `Mehmet
 Ersue`, the `-v` flag can be passed more than once. For example:
 
 	$ readit -f test.readit -v "Carsten Bormann" -v "Mehmet Ersue" "Authors"
-	x [rfc7228]: Terminology for Constrained-Node Networks
+	- [rfc7228]: Terminology for Constrained-Node Networks
 
 ## License
 
