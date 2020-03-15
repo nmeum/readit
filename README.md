@@ -77,9 +77,8 @@ Consider the following input file:
 		* Topics: {Internet of Things, Constrained Devices}
 		* References: [rfc7252]
 
-		* Motivated by scaling aspects in the Internet of Things
+		* Introduces different Internet of Things related terms
 		* Differentiates different classes of constrained devices
-		* Introduced different Internet of Things related terms
 
 This file contains reading list entries for [RFC 7252][rfc7252] and
 [RFC 7228][rfc7228]. Only the latter contains notes, both make use of
