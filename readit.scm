@@ -36,15 +36,14 @@
   (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
   (exit))
 
-(define (parse-file path)
-  (call-with-input-file path
-    (lambda (port)
-      (let ((r (parse-readit port)))
-        (if r r (error "syntax error in" fp))))))
+(define (parse-input port)
+  (let ((r (parse-readit port)))
+    (if r r (error "syntax error" port))))
 
 (define (parse-files fps)
   (fold (lambda (fp entries)
-          (append (parse-file fp) entries))
+          (append (call-with-input-file
+                    fp parse-input) entries))
         '() fps))
 
 (define (parse-args)
@@ -89,7 +88,10 @@
                 (unless (file-exists? fp)
                   (error "file does not exist" fp))) files)
 
-    (let* ((entries  (parse-files files))
+    (let* ((entries
+             (if (null? files)
+               (parse-input (current-input-port))
+               (parse-files files)))
            (filtered (filter-entries entries state (car args) fvals)))
       (for-each (lambda (entry) (print (car entry))) filtered))))
 
