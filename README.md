@@ -57,7 +57,8 @@ The optional key-value pairs are entirely user-chosen. Two special types
 are provided for field values: References and sets. References are
 enclosed in square brackets and contain (one or more) reference to the
 unique identifiers of other entries. Sets are collections of multiple
-values, e.g. multiple author names.
+values, e.g. multiple author names, sets are specified using curly
+brackets.
 
 The optional notes are separated from key-value pairs using an empty
 line (even when fields are omitted). The reference and set literals
