@@ -107,8 +107,6 @@ Ersue`, the `-v` flag can be passed more than once. For example:
 	$ readit -f test.readit -v "Carsten Bormann" -v "Mehmet Ersue" "Authors"
 	x [rfc7228]: Terminology for Constrained-Node Networks
 
-At the moment, references cannot be used for matching.
-
 ## License
 
 This program is free software: you can redistribute it and/or modify it

@@ -58,7 +58,9 @@
 ;; TODO: match regex
 ;; TODO: optionally ignore case during matches
 (define (field-matches? fval str)
-  (cond ((readit-ref? fval) #f)
+  (cond ((readit-ref? fval)
+         (any (lambda (e) (equal? e (string->symbol str)))
+              (vector->list fval)))
         ((readit-set? fval)
          (any (lambda (e) (equal? e str)) (vector->list fval)))
         (else (equal? fval str))))
