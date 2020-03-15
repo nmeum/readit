@@ -91,11 +91,7 @@
 
     (let* ((entries  (parse-files files))
            (filtered (filter-entries entries state (car args) fvals)))
-      (for-each (lambda (entry)
-                  (match-let (((meta fields _) entry))
-                    (unless (null? fields)
-                      (print meta))))
-                filtered))))
+      (for-each (lambda (entry) (print (car entry))) filtered))))
 
 (cond-expand
   ((or chicken-script compiling) (main))
