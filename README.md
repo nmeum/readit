@@ -65,6 +65,13 @@ line (even when fields are omitted). The reference and set literals
 cannot currently be used in the notes section. At the moment, notes are
 just uninterpreted plain text.
 
+## Tools
+
+The following tools are provided currently:
+
+* `readit`: Allows finding entries by field values.
+* `readit-graph`: Allows generating reference graphs.
+
 ## Example
 
 Consider the following input file:
