@@ -1,4 +1,6 @@
 readit
+readit-graph
+
 *.sh
 *.import.scm
 *.link
