@@ -15,10 +15,10 @@ notes, I came up with this repository.
 
 Work in progress, I am (more or less) happy with the input format. The
 tooling is still in very early stages of development. Tooling for
-finding entries is available as a proof of concept. Additionally, I
-would like to add tooling for generating reference graphs, interacting
-with fields (e.g. list all field names), and tooling for generating
-HTML output.
+finding entries and generating reference graphs is available as a proof
+of concept. Additionally, I would like to add tooling for interacting
+with fields (e.g. list all field names) and tooling for generating HTML
+output. The existing tooling also needs to be improved significantly.
 
 ## Features
 
