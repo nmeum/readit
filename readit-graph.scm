@@ -57,7 +57,7 @@
 
 (define (print-graph entries)
   (let ((alist (build-alist entries)))
-    (printf "digraph G {~%rankdir = \"LR\";~%~%")
+    (printf "digraph G {~%")
     (for-each (lambda (entry)
                 (let ((refs (filter-refs entry)))
                   (for-each (lambda (ref)
