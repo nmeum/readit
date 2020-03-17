@@ -1,5 +1,5 @@
 (import (chicken process-context) (chicken format)
-        matchable (readit parser) srfi-1 srfi-14)
+        matchable (readit parser) srfi-1)
 
 (define (parse-input port)
   (let ((r (parse-readit port)))
@@ -13,7 +13,7 @@
 
 (define (dot-escape str)
   (define (needs-esc c)
-    (char-set-contains? (list->char-set '(#\" #\\)) c))
+    (or (eqv? c #\") (eqv? c #\\)))
 
   (define (dot-escape* cur end)
     (if (> cur end)
