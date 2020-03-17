@@ -1,5 +1,5 @@
 (import (chicken process-context) (chicken format)
-        matchable (readit parser) srfi-1)
+        matchable (readit parser) srfi-1 srfi-14)
 
 (define (parse-input port)
   (let ((r (parse-readit port)))
@@ -10,6 +10,22 @@
           (append (call-with-input-file
                     fp parse-input) entries))
         '() fps))
+
+(define (dot-escape str)
+  (define (needs-esc c)
+    (char-set-contains? (list->char-set '(#\" #\\)) c))
+
+  (define (dot-escape* cur end)
+    (if (> cur end)
+      ""
+      (let ((c (string-ref str cur)))
+        (string-append
+          (if (needs-esc c)
+            (list->string (list #\\ c))
+            (string c))
+          (dot-escape* (+ cur 1) end)))))
+
+  (dot-escape* 0 (- (string-length str) 1)))
 
 (define (build-alist entries)
   (fold (lambda (entry alist)
@@ -31,13 +47,13 @@
   (match-let (((key . val) field))
     (for-each (lambda (ref)
       (printf "\"~A\" -> \"~A\" [label=\"~A\"];~%"
-            (meta-title (car entry))
+            (dot-escape (meta-title (car entry)))
             (let* ((p (assoc ref alist))
                    (e (if (not p)
                         (error "undefined reference" ref)
                         (cdr p))))
-              (meta-title (car e)))
-            key)) (vector->list val))))
+              (dot-escape (meta-title (car e))))
+            (dot-escape key))) (vector->list val))))
 
 (define (print-graph entries)
   (let ((alist (build-alist entries)))
