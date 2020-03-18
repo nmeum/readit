@@ -61,7 +61,7 @@
 
   (match-let (((key . val) field))
     (for-each (lambda (ref)
-      (printf "\"~A\" -> \"~A\" [label=\"~A\"];~%"
+      (printf "\t\"~A\" -> \"~A\" [label=\"~A\"];~%"
             (node-desc (car entry))
             (let* ((p (assoc ref alist))
                    (e (if (not p)
