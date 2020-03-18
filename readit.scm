@@ -37,15 +37,6 @@
   (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
   (exit))
 
-(define (parse-args)
-  (args-fold
-    (command-line-arguments)
-    (list help done file value)
-    (lambda (o n x vals)
-      (error "unrecognized option" n))
-    cons
-    '()))
-
 ;; TODO: match regex
 ;; TODO: optionally ignore case during matches
 (define (field-matches? fval str)
@@ -73,7 +64,7 @@
           entries))
 
 (define (main)
-  (let* ((args (parse-args)))
+  (let* ((args (parse-args (list help done file value))))
     (when (not (equal? (length args) 1))
       (usage))
 

@@ -7,3 +7,12 @@
           (append (call-with-input-file
                     fp parse-input) entries))
         '() fps))
+
+(define (parse-args flags)
+  (args-fold
+    (command-line-arguments)
+    flags
+    (lambda (o n x vals)
+      (error "unrecognized option" n))
+    cons
+    '()))
