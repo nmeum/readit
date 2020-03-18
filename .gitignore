@@ -5,3 +5,4 @@ readit-graph
 *.import.scm
 *.link
 *.so
+*.o
