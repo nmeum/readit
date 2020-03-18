@@ -68,8 +68,6 @@
     (when (not (equal? (length args) 1))
       (usage))
 
-    (ensure-present files)
-
     (let* ((entries
              (if (null? files)
                (parse-input (current-input-port))
