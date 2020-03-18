@@ -1,5 +1,6 @@
 (import (chicken process-context) (chicken file) (chicken format)
         matchable (readit parser) srfi-1 srfi-37)
+(include-relative "util.scm")
 
 (define files '())
 (define fvals '())
@@ -35,16 +36,6 @@
 (define (usage)
   (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
   (exit))
-
-(define (parse-input port)
-  (let ((r (parse-readit port)))
-    (if r r (error "syntax error" port))))
-
-(define (parse-files fps)
-  (fold (lambda (fp entries)
-          (append (call-with-input-file
-                    fp parse-input) entries))
-        '() fps))
 
 (define (parse-args)
   (args-fold

@@ -1,15 +1,6 @@
 (import (chicken process-context) (chicken format)
         matchable (readit parser) srfi-1)
-
-(define (parse-input port)
-  (let ((r (parse-readit port)))
-    (if r r (error "syntax error" port))))
-
-(define (parse-files fps)
-  (fold (lambda (fp entries)
-          (append (call-with-input-file
-                    fp parse-input) entries))
-        '() fps))
+(include-relative "util.scm")
 
 (define (dot-escape str)
   (define (needs-esc c)
