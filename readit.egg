@@ -4,7 +4,9 @@
  (dependencies comparse matchable srfi-1 srfi-14 srfi-37)
  (test-dependencies test)
  (components
-   (program readit)
-   (program readit-graph)
+   (program readit
+            (source-dependencies "util.scm"))
+   (program readit-graph
+            (source-dependencies "util.scm"))
    (extension readit.parser
               (source "parser.scm"))))
