@@ -8,6 +8,11 @@
                     fp parse-input) entries))
         '() fps))
 
+(define (ensure-present fps)
+  (for-each (lambda (fp)
+              (unless (file-exists? fp)
+                (error "file does not exist" fp))) files))
+
 (define (parse-args flags)
   (args-fold
     (command-line-arguments)

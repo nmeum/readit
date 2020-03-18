@@ -68,9 +68,7 @@
     (when (not (equal? (length args) 1))
       (usage))
 
-    (for-each (lambda (fp)
-                (unless (file-exists? fp)
-                  (error "file does not exist" fp))) files)
+    (ensure-present files)
 
     (let* ((entries
              (if (null? files)
