@@ -57,7 +57,7 @@ using parser combinators in the file `parser.scm`.
 
 The optional key-value pairs are entirely user-chosen. Two special types
 are provided for field values: References and sets. References are
-enclosed in square brackets and contain (one or more) reference to the
+enclosed in square brackets and contain (one or more) references to the
 unique identifiers of other entries. Sets are collections of multiple
 values, e.g. multiple author names, sets are specified using curly
 brackets.
