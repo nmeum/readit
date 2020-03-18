@@ -6,6 +6,10 @@
 (define fvals '())
 (define state '())
 
+(define (usage)
+  (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
+  (exit))
+
 (define help
   (option
     '(#\h "help") #f #f
@@ -32,10 +36,6 @@
     (lambda (o n x vals)
       (set! fvals (cons x fvals))
       vals)))
-
-(define (usage)
-  (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
-  (exit))
 
 ;; TODO: match regex
 ;; TODO: optionally ignore case during matches
