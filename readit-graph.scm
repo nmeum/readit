@@ -3,9 +3,10 @@
 (include-relative "util.scm")
 
 (define kflag #f)
+(define shape '())
 
 (define (usage)
-  (print "Usage: readit [-k] FILE...")
+  (print "Usage: readit [-k] [-n shape] FILE...")
   (exit))
 
 (define help
@@ -19,6 +20,13 @@
     '(#\k "keys") #f #f
     (lambda (o n x vals)
       (set! kflag #t)
+      vals)))
+
+(define node-shape
+  (option
+    '(#\n "node-shape") #t #t
+    (lambda (o n x vals)
+      (set! shape x)
       vals)))
 
 (define (dot-escape str)
@@ -73,6 +81,8 @@
 (define (print-graph entries)
   (let ((alist (build-alist entries)))
     (printf "digraph G {~%")
+    (unless (null? shape)
+      (printf "\tnode [shape=\"~A\"];~%" shape))
     (for-each (lambda (entry)
                 (let ((refs (filter-refs entry)))
                   (for-each (lambda (ref)
@@ -81,8 +91,7 @@
     (printf "}~%")))
 
 (define (main)
-  ;; TODO: Add -e flag (do not label edges)
-  (let* ((files (parse-args (list help use-keys)))
+  (let* ((files (parse-args (list help use-keys node-shape)))
          (entries
            (if (null? files)
              (parse-input (current-input-port))
