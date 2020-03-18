@@ -25,6 +25,8 @@ output. The existing tooling also needs to be improved significantly.
 * Simple plain-text input format
 * [CHICKEN Scheme][chicken website] module for parsing the format
 * Work in progress tooling for interacting with files of this format
+	* `readit`: Allows finding entries by field values.
+	* `readit-graph`: Allows generating reference graphs.
 
 ## Installation
 
@@ -64,13 +66,6 @@ The optional notes are separated from key-value pairs using an empty
 line (even when fields are omitted). The reference and set literals
 cannot currently be used in the notes section. At the moment, notes are
 just uninterpreted plain text.
-
-## Tools
-
-The following tools are provided currently:
-
-* `readit`: Allows finding entries by field values.
-* `readit-graph`: Allows generating reference graphs.
 
 ## Example
 
