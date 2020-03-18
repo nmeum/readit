@@ -1,4 +1,4 @@
-(import (chicken process-context) (chicken format)
+(import (chicken process-context) (chicken file) (chicken format)
         matchable (readit parser) srfi-1 srfi-37)
 (include-relative "util.scm")
 

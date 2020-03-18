@@ -6,7 +6,7 @@
   (define (ensure-present fps)
     (for-each (lambda (fp)
                 (unless (file-exists? fp)
-                  (error "file does not exist" fp))) files))
+                  (error "file does not exist" fp))) fps))
 
   ;; According to the CHICKEN documentation, files passed to
   ;; call-with-input-file "should already exist".
