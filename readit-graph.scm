@@ -1,6 +1,25 @@
 (import (chicken process-context) (chicken format)
-        matchable (readit parser) srfi-1)
+        matchable (readit parser) srfi-1 srfi-37)
 (include-relative "util.scm")
+
+(define kflag #f)
+
+(define (usage)
+  (print "Usage: readit [-k] FILE...")
+  (exit))
+
+(define help
+  (option
+    '(#\h "help") #f #f
+    (lambda _
+      (usage))))
+
+(define use-keys
+  (option
+    '(#\k "keys") #f #f
+    (lambda (o n x vals)
+      (set! kflag #t)
+      vals)))
 
 (define (dot-escape str)
   (define (needs-esc c)
@@ -35,15 +54,20 @@
                 (readit-ref? val))) fields)))
 
 (define (print-ref entry field alist)
+  (define (node-desc meta)
+    (if kflag
+      (meta-key meta)
+      (dot-escape (meta-title meta))))
+
   (match-let (((key . val) field))
     (for-each (lambda (ref)
       (printf "\"~A\" -> \"~A\" [label=\"~A\"];~%"
-            (dot-escape (meta-title (car entry)))
+            (node-desc (car entry))
             (let* ((p (assoc ref alist))
                    (e (if (not p)
                         (error "undefined reference" ref)
                         (cdr p))))
-              (dot-escape (meta-title (car e))))
+              (node-desc (car e)))
             (dot-escape key))) (vector->list val))))
 
 (define (print-graph entries)
@@ -57,7 +81,8 @@
     (printf "}~%")))
 
 (define (main)
-  (let* ((files (command-line-arguments))
+  ;; TODO: Add -e flag (do not label edges)
+  (let* ((files (parse-args (list help use-keys)))
          (entries
            (if (null? files)
              (parse-input (current-input-port))
