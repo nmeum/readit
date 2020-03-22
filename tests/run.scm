@@ -73,6 +73,19 @@
           '("Introduces a programming system called LISP"))
     (parse-entry "mccarthy1960lisp.txt"))
 
+  (test "parse entry without fields and nested numbered notes"
+    (list (make-meta #\-
+                     'rfc7228
+                     "Terminology for Constrained-Node Networks")
+          '()
+          '(
+            "Distinguishes three classes of constrained devices:"
+            "Class 0: Very constrained sensor-like motes"
+            "Class 1: Quite constrained in code space and processing capabilities"
+            "Class 2: Can utilize conventional Internet protocols"
+           ))
+    (parse-entry "rfc7228.txt"))
+
   (test "parse entry with fields and notes"
     (list (make-meta #\-
                      'landin1966languages

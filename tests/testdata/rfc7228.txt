@@ -1,0 +1,6 @@
+- [rfc7228]: Terminology for Constrained-Node Networks
+
+	* Distinguishes three classes of constrained devices:
+		1. Class 0: Very constrained sensor-like motes
+		2. Class 1: Quite constrained in code space and processing capabilities
+		3. Class 2: Can utilize conventional Internet protocols

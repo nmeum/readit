@@ -139,8 +139,15 @@
   ;; Parser for optional notes
   ;;;;
 
+  (define parse-note-start
+    (any-of
+      (is #\*)
+      (preceded-by
+        (one-or-more (in char-set:digit))
+        (is #\.))))
+
   (define parse-note
-    (spaces-sequence* ((_    (is #\*))
+    (spaces-sequence* ((_    parse-note-start)
                        (text parse-text)
                        (_    (is #\newline)))
       (result text)))
