@@ -14,9 +14,9 @@
     (define (join . strings)
       (fold (lambda (str output)
               (string-append
-                (if (> (string-length output) 0)
-                  (string-append output " ")
-                  output) str)) "" strings))
+                (if (zero? (string-length output))
+                  output
+                  (string-append output " ")) str)) "" strings))
 
     (display (join
                (string (meta-state input))
