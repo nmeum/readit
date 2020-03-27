@@ -125,6 +125,10 @@
               "Emphasises the importance of isolation mechanisms"
               "Has a focus on microkernel architectures"
              )))
-    (parse-entries "example.txt")))
+    (parse-entries "example.txt"))
+
+    (test "parse partially invalid data"
+      #f
+      (parse-readit "- [foo]: bar\n- [föö]: baz\n")))
 
 (test-exit)

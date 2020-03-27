@@ -195,4 +195,6 @@
          (every string? (vector->list obj))))
 
   (define (parse-readit input)
-    (parse parse-entries input)))
+    (parse (sequence* ((r parse-entries)
+                       (_ end-of-input))
+           (result r)) input)))
