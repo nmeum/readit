@@ -47,6 +47,9 @@
       (in (char-set-complement (list->char-set
                                   (cons char chars)))))))
 
+  (define parse-spaces
+    (zero-or-more (in char-set:whitespace)))
+
   (define parse-blanks
     (zero-or-more (in char-set:blank)))
 
@@ -177,7 +180,7 @@
 
   (define parse-entries
     (one-or-more (preceded-by
-                   (zero-or-more (in char-set:whitespace))
+                   parse-spaces
                    parse-entry)))
 
   ;;;;
