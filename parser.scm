@@ -56,14 +56,14 @@
   (define parse-text
     (parse-any-except #\newline))
 
-  (define-syntax spaces-sequence*
+  (define-syntax blanks-sequence*
     (syntax-rules ()
       ((_ () body ...)
        (begin body ...))
       ((_ ((binding parser) more-bindings ...) body ...)
        (bind (preceded-by parse-blanks parser)
              (lambda (binding)
-                (spaces-sequence* (more-bindings ...) body ...))))))
+                (blanks-sequence* (more-bindings ...) body ...))))))
 
   ;;;;
   ;; Parser for literals
@@ -128,7 +128,7 @@
       parse-text))
 
   (define parse-field
-    (spaces-sequence* ((_     (is #\*))
+    (blanks-sequence* ((_     (is #\*))
                        (name  parse-field-name)
                        (_     (is #\:))
                        (value parse-field-value)
@@ -150,7 +150,7 @@
         (is #\.))))
 
   (define parse-note
-    (spaces-sequence* ((_    parse-note-start)
+    (blanks-sequence* ((_    parse-note-start)
                        (text parse-text)
                        (_    (is #\newline)))
       (result text)))
@@ -170,7 +170,7 @@
       (result (list fields notes))))
 
   (define parse-entry
-    (spaces-sequence* ((state  parse-state)
+    (blanks-sequence* ((state  parse-state)
                        (key    parse-key)
                        (_      (is #\:))
                        (title  parse-title)
