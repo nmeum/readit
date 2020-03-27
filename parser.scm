@@ -47,7 +47,7 @@
       (in (char-set-complement (list->char-set
                                   (cons char chars)))))))
 
-  (define parse-spaces
+  (define parse-blanks
     (zero-or-more (in char-set:blank)))
 
   (define parse-text
@@ -58,7 +58,7 @@
       ((_ () body ...)
        (begin body ...))
       ((_ ((binding parser) more-bindings ...) body ...)
-       (bind (preceded-by parse-spaces parser)
+       (bind (preceded-by parse-blanks parser)
              (lambda (binding)
                 (spaces-sequence* (more-bindings ...) body ...))))))
 
@@ -81,7 +81,7 @@
       (one-or-more
         (sequence* ((elem parser)
                     (_    (maybe (is #\,)))
-                    (_    parse-spaces))
+                    (_    parse-blanks))
           (result elem))))
 
     (bind (parse-vector*)
