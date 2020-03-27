@@ -97,6 +97,14 @@
            ))
     (parse-entry "landin1966languages.txt"))
 
+  (test "parse entry with spaces in notes"
+    (list (make-meta #\-
+                     'foo
+                     "bar")
+          '()
+          '("foo" "bar" "baz"))
+    (parse-entry "notes-with-spaces.txt"))
+
   (test "parse multiple entries"
     (list
       (list (make-meta #\-

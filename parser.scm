@@ -152,7 +152,7 @@
   (define parse-note
     (blanks-sequence* ((_    parse-note-start)
                        (text parse-text)
-                       (_    (is #\newline)))
+                       (_    parse-spaces))
       (result text)))
 
   (define parse-notes
