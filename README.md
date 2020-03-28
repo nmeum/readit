@@ -52,8 +52,9 @@ The input file is based on reading list entries with associated
 information. Each entry consists of a current state, either read `x` or
 unread `-`, a unique identifier, and a description (e.g. publication
 title). Additionally, key-value pairs and notes can be optionally
-associated with an entry. The syntax of the input format is specified
-using parser combinators in the file `parser.scm`.
+associated with an entry, both must be indented by either 4 spaces or
+one tab. The syntax of the input format is specified using parser
+combinators in the file `parser.scm`.
 
 The optional key-value pairs are entirely user-chosen. Two special types
 are provided for field values: References and sets. References are
@@ -65,7 +66,9 @@ brackets.
 The optional notes are separated from key-value pairs using an empty
 line (even when fields are omitted). The reference and set literals
 cannot currently be used in the notes section. At the moment, notes are
-just uninterpreted plain text.
+just uninterpreted plain text. As such, the note format is currently
+entirely up to the user, it is (for example) possible to use markdown
+syntax for notes.
 
 ## Example
 
