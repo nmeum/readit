@@ -1,0 +1,29 @@
+* Allow execution with cpp(1) to support #include as
+  done by calendar(1) and the Xresources parser.
+* Allow associating more information with references,
+  for instance to allow referencing specific pages
+* Less syntactic restrictions for optional notes
+	* Allow references in notes
+	* Allow newlines in note entries. Alternatively, explicitly
+	  advocated single-lines notes for clarity. Figure out what
+	  works best by experimenting with this a bit.
+	* Allow markdown-like syntax, e.g. headings, et cetera
+* Consider allowing specific unicode characters as note start
+  characters. For example ↳ or →.
+* Considering adding support for an "in-progress" entry state (e.g. |).
+* Experiment with using wikidata IDs for topics (e.g. Q179310)
+
+* Add readit-def tool for finding the line number and file where a
+  reading list entry has been defined. This has to be done after CPP
+  integration as CPP integration (#include) will make doing so more
+  difficult.
+	* If combined with CPP integration parsing of CPP markers is necessary
+	* Syntax for CPP markers maybe vary across different implementations
+	* For GCC documented here: https://gcc.gnu.org/onlinedocs/gcc-7.2.0/cpp/Preprocessor-Output.html#Preprocessor-Output
+* Add readit-fields tool for finding fields by value
+	* Should allow listing all field names, like `beet fields` to
+	  ensure consistency regarding entry field names
+
+* Alternative design: Use markdown for notes, only use readit format for
+  fields. This would be similar to Jekyll's approach for combining
+  metadata with text by using markdown with inline yaml.
