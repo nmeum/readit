@@ -146,10 +146,7 @@
       (result (string-append text "\n"))))
 
   (define parse-notes
-    (bind (zero-or-more parse-note)
-      (lambda (r)
-        (result (fold (lambda (elem str)
-                        (string-append str elem)) "" r)))))
+    (as-string (zero-or-more parse-note)))
 
   ;;;;
   ;; Combine utility parsers
