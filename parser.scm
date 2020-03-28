@@ -1,6 +1,6 @@
 (module (readit parser)
-  (make-meta meta-state meta-key meta-title
-   parse-readit readit-ref? readit-set?)
+  (make-meta meta-state meta-key meta-title parse-fields
+   parse-readit readit-ref? readit-set? parse-indent parse-note parse-notes)
   (import scheme (chicken base) comparse srfi-1 srfi-14)
 
   (define-record-type metadata
@@ -47,23 +47,16 @@
       (in (char-set-complement (list->char-set
                                   (cons char chars)))))))
 
-  (define parse-spaces
-    (zero-or-more (in char-set:whitespace)))
+  (define parse-indent
+    (any-of
+      (is #\tab)
+      (repeated (is #\space) min: 4 max: 4)))
 
   (define parse-blanks
     (zero-or-more (in char-set:blank)))
 
   (define parse-text
     (parse-any-except #\newline))
-
-  (define-syntax blanks-sequence*
-    (syntax-rules ()
-      ((_ () body ...)
-       (begin body ...))
-      ((_ ((binding parser) more-bindings ...) body ...)
-       (bind (preceded-by parse-blanks parser)
-             (lambda (binding)
-                (blanks-sequence* (more-bindings ...) body ...))))))
 
   ;;;;
   ;; Parser for literals
@@ -128,11 +121,15 @@
       parse-text))
 
   (define parse-field
-    (blanks-sequence* ((_     (is #\*))
-                       (name  parse-field-name)
-                       (_     (is #\:))
-                       (value parse-field-value)
-                       (_     (is #\newline)))
+    (sequence* ((_     parse-indent)
+                (_     (is #\*))
+                (_     parse-blanks)
+                (name  parse-field-name)
+                (_     (is #\:))
+                (_     parse-blanks)
+                (value parse-field-value)
+                (_     parse-blanks)
+                (_     (is #\newline)))
       (result (cons name value))))
 
   (define parse-fields
@@ -142,21 +139,17 @@
   ;; Parser for optional notes
   ;;;;
 
-  (define parse-note-start
-    (any-of
-      (is #\*)
-      (preceded-by
-        (one-or-more (in char-set:digit))
-        (is #\.))))
-
   (define parse-note
-    (blanks-sequence* ((_    parse-note-start)
-                       (text parse-text)
-                       (_    parse-spaces))
-      (result text)))
+    (sequence* ((_    parse-indent)
+                (text parse-text)
+                (_    (one-or-more (is #\newline))))
+      (result (string-append text "\n"))))
 
   (define parse-notes
-    (zero-or-more parse-note))
+    (bind (zero-or-more parse-note)
+      (lambda (r)
+        (result (fold (lambda (elem str)
+                        (string-append str elem)) "" r)))))
 
   ;;;;
   ;; Combine utility parsers
@@ -166,21 +159,23 @@
     (sequence* ((fields (maybe parse-fields '()))
                 (notes  (maybe (preceded-by
                                  (is #\newline)
-                                 parse-notes) '())))
+                                 parse-notes) "")))
       (result (list fields notes))))
 
   (define parse-entry
-    (blanks-sequence* ((state  parse-state)
-                       (key    parse-key)
-                       (_      (is #\:))
-                       (title  parse-title)
-                       (_      (is #\newline))
-                       (info   (maybe parse-info (list '() '()))))
+    (sequence* ((state  parse-state)
+                (_      parse-blanks)
+                (key    parse-key)
+                (_      (is #\:))
+                (_      parse-blanks)
+                (title  parse-title)
+                (_      (is #\newline))
+                (info   (maybe parse-info (list '() '()))))
       (result (cons (make-meta state key title) info))))
 
   (define parse-entries
     (one-or-more (preceded-by
-                   parse-spaces
+                   (zero-or-more (in char-set:whitespace))
                    parse-entry)))
 
   ;;;;

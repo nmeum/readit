@@ -15,7 +15,7 @@
   (test "parse entry without fields and notes"
     (list (make-meta #\-
                'thompson1984trust
-               "Reflections on Trusting Trust") '() '())
+               "Reflections on Trusting Trust") '() "")
     (parse-entry "thompson1984trust.txt"))
 
   (test "parse entry with fields and without notes"
@@ -26,7 +26,7 @@
             ("Importance" . "High")
             ("DOI" . "10.1109/TIT.1956.1056813")
            )
-          '())
+          "")
     (parse-entry "chomsky1956hierarchy.txt"))
 
   (test "parse entry with set fields"
@@ -37,7 +37,7 @@
             ("Authors" . #("Dennis M. Ritchie" "Ken Thompson"))
             ("Topics" . #("UNIX"))
            )
-          '())
+          "")
     (parse-entry "ritchie1974unix.txt"))
 
   (test "parse entry with escaped set fields"
@@ -51,7 +51,7 @@
             ("Escaped All" . #("foobar"))
             ("Escaped Multiple" . #("foo," "bar"))
            )
-          '())
+          "")
     (parse-entry "bratus2015bugs.txt"))
 
   (test "parse entry with ref fields"
@@ -62,7 +62,7 @@
             ("Related" . #(ritchie1974unix))
             ("References" . #(dijkstra68sequential pike84blit))
            )
-          '())
+          "")
     (parse-entry "bach1986unix.txt"))
 
   (test "parse entry without fields and with a single note"
@@ -70,7 +70,7 @@
                      'mccarthy1960lisp
                      "Recursive functions of symbolic expressions and their computation by machine, part I")
           '()
-          '("Introduces a programming system called LISP"))
+          "* Introduces a programming system called LISP\n")
     (parse-entry "mccarthy1960lisp.txt"))
 
   (test "parse entry without fields and nested numbered notes"
@@ -78,12 +78,12 @@
                      'rfc7228
                      "Terminology for Constrained-Node Networks")
           '()
-          '(
-            "Distinguishes three classes of constrained devices:"
-            "Class 0: Very constrained sensor-like motes"
-            "Class 1: Quite constrained in code space and processing capabilities"
-            "Class 2: Can utilize conventional Internet protocols"
-           ))
+          (string-append
+            "* Distinguishes three classes of constrained devices:\n"
+            "\t1. Class 0: Very constrained sensor-like motes\n"
+            "\t2. Class 1: Quite constrained in code space and processing capabilities\n"
+            "\t3. Class 2: Can utilize conventional Internet protocols\n"
+          ))
     (parse-entry "rfc7228.txt"))
 
   (test "parse entry with fields and notes"
@@ -91,10 +91,10 @@
                      'landin1966languages
                      "The next 700 programming languages")
           '(("DOI" . "10.1145/365230.365257"))
-          '(
-            "Describes a family of unimplemented languages"
-            "Focuses on expression-based languages"
-           ))
+          (string-append
+            "* Describes a family of unimplemented languages\n"
+            "* Focuses on expression-based languages\n"
+          ))
     (parse-entry "landin1966languages.txt"))
 
   (test "parse entry with spaces in notes"
@@ -102,14 +102,18 @@
                      'foo
                      "bar")
           '()
-          '("foo" "bar" "baz"))
+          (string-append
+            "* foo\n"
+            "* bar\n"
+            "* baz\n"
+          ))
     (parse-entry "notes-with-spaces.txt"))
 
   (test "parse multiple entries"
     (list
       (list (make-meta #\-
                        'liedtke1995microkernel
-                       "On μ-kernel construction") '() '())
+                       "On μ-kernel construction") '() "")
       (list (make-meta #\-
                        'basili1984complexity
                        "Software Errors and Complexity: An Empirical Investigation")
@@ -118,7 +122,7 @@
               ("DOI" . "10.1145/69605.2085")
               ("Topics" . #("Software Engineering"))
              )
-            '())
+            "")
       (list (make-meta #\x
                        'tanenbaum2006secure
                        "Can We Make Operating Systems Reliable and Secure?")
@@ -128,11 +132,11 @@
               ("Topics" . #("Computer Security" "Operating Systems"))
               ("References" . #(basili1984complexity liedtke1995microkernel))
              )
-            '(
-              "Discusses techniques for improving the security of operating systems"
-              "Emphasises the importance of isolation mechanisms"
-              "Has a focus on microkernel architectures"
-             )))
+            (string-append
+              "* Discusses techniques for improving the security of operating systems\n"
+              "* Emphasises the importance of isolation mechanisms\n"
+              "* Has a focus on microkernel architectures\n"
+            )))
     (parse-entries "example.txt"))
 
     (test "parse partially invalid data"
