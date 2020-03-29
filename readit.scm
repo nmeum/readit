@@ -7,7 +7,7 @@
 (define state '())
 
 (define (usage)
-  (print "Usage: readit [-x] [-f FILE] [-v VALUE] NAME")
+  (print "Usage: readit [-x] [-f FILE] [-v VALUE] [NAME]")
   (exit))
 
 (define help
@@ -65,15 +65,16 @@
 
 (define (main)
   (let* ((args (parse-args (list help done file value))))
-    (when (not (equal? (length args) 1))
+    (when (> (length args) 1)
       (usage))
 
     (let* ((entries
              (if (null? files)
                (parse-input (current-input-port))
-               (parse-files files)))
-           (filtered (filter-entries entries state (car args) fvals)))
-      (for-each (lambda (entry) (print (car entry))) filtered))))
+               (parse-files files))))
+      (unless (equal? (length args) 0)
+        (for-each (lambda (entry) (print (car entry)))
+                  (filter-entries entries state (car args) fvals))))))
 
 (cond-expand
   ((or chicken-script compiling) (main))
